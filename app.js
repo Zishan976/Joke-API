@@ -29,13 +29,30 @@ const swaggerOptions = {
       },
     ],
   },
-  apis: ["./index.js"],
+  apis: ["./app.js"],
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 //1. GET a random joke
+/**
+ * @swagger
+ * tags:
+ *   - name: Jokes
+ *     description: Joke management endpoints
+ */
+/**
+ * @swagger
+ * /jokes/random:
+ *   get:
+ *     tags:
+ *       - Jokes
+ *     summary: Get a random joke
+ *     responses:
+ *       200:
+ *         description: A random joke
+ */
 app.get("/jokes/random", (req, res) => {
   const randomIndex = Math.floor(Math.random() * jokes.length);
   const randomJoke = jokes[randomIndex];
@@ -44,15 +61,41 @@ app.get("/jokes/random", (req, res) => {
 
 /**
  * @swagger
- * /jokes/random:
+ * tags:
+ *   - name: Jokes
+ *     description: Joke management endpoints
+ */
+/**
+ * @swagger
+ * /jokes/{id}:
  *   get:
- *     summary: Get a random joke
+ *     tags:
+ *       - Jokes
+ *     summary: Get a specific joke by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the joke to retrieve
  *     responses:
  *       200:
- *         description: A random joke
+ *         description: A joke object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 jokeText:
+ *                   type: string
+ *                 jokeType:
+ *                   type: string
+ *       404:
+ *         description: Joke not found
  */
-
-//2. GET a specific joke
 app.get("/jokes/:id", (req, res) => {
   const jokeId = parseInt(req.params.id);
   const joke = jokes.find((joke) => joke.id === jokeId);
@@ -65,24 +108,45 @@ app.get("/jokes/:id", (req, res) => {
 
 /**
  * @swagger
- * /jokes/{id}:
+ * tags:
+ *   - name: Jokes
+ *     description: Joke management endpoints
+ */
+/**
+ * @swagger
+ * /jokes:
  *   get:
- *     summary: Get a specific joke by ID
+ *     tags:
+ *       - Jokes
+ *     summary: Get jokes filtered by type
  *     parameters:
- *       - name: id
- *         in: path
+ *       - in: query
+ *         name: type
  *         required: true
- *         description: ID of the joke to retrieve
  *         schema:
- *           type: integer
+ *           type: string
+ *         description: The type of jokes to filter by
  *     responses:
  *       200:
- *         description: A specific joke
+ *         description: List of jokes filtered by type
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                   jokeText:
+ *                     type: string
+ *                   jokeType:
+ *                     type: string
+ *       400:
+ *         description: Missing joke type query parameter
  *       404:
- *         description: Joke not found
+ *         description: No jokes found for this type
  */
-
-//3. GET a jokes by filtering on the joke type
 app.get("/jokes", (req, res) => {
   const jokeType = req.query.type;
   if (jokeType) {
@@ -120,7 +184,54 @@ app.get("/jokes", (req, res) => {
  *         description: No jokes found for this type
  */
 
-//4. POST a new joke
+/**
+ * @swagger
+ * tags:
+ *   - name: Jokes
+ *     description: Joke management endpoints
+ */
+/**
+ * @swagger
+ * /jokes:
+ *   post:
+ *     tags:
+ *       - Jokes
+ *     summary: Add a new joke
+ *     parameters:
+ *       - in: query
+ *         name: key
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Master key for authorization
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               text:
+ *                 type: string
+ *               type:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Joke created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 jokeText:
+ *                   type: string
+ *                 jokeType:
+ *                   type: string
+ *       403:
+ *         description: Forbidden
+ */
 app.post("/jokes", (req, res) => {
   const userKey = req.query.key;
   const newJoke = {
@@ -166,7 +277,62 @@ app.post("/jokes", (req, res) => {
  *         description: Forbidden
  */
 
-//5. PUT a joke
+/**
+ * @swagger
+ * tags:
+ *   - name: Jokes
+ *     description: Joke management endpoints
+ */
+/**
+ * @swagger
+ * /jokes/{id}:
+ *   put:
+ *     tags:
+ *       - Jokes
+ *     summary: Update a joke by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the joke to update
+ *       - in: query
+ *         name: key
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Master key for authorization
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               text:
+ *                 type: string
+ *               type:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Joke updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 jokeText:
+ *                   type: string
+ *                 jokeType:
+ *                   type: string
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: Joke not found
+ */
 app.put("/jokes/:id", (req, res) => {
   const jokeId = parseInt(req.params.id);
   const userKey = req.query.key;
@@ -226,7 +392,62 @@ app.put("/jokes/:id", (req, res) => {
  *         description: Joke not found
  */
 
-//6. PATCH a joke
+/**
+ * @swagger
+ * tags:
+ *   - name: Jokes
+ *     description: Joke management endpoints
+ */
+/**
+ * @swagger
+ * /jokes/{id}:
+ *   patch:
+ *     tags:
+ *       - Jokes
+ *     summary: Partially update a joke by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the joke to update
+ *       - in: query
+ *         name: key
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Master key for authorization
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               text:
+ *                 type: string
+ *               type:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Joke updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 jokeText:
+ *                   type: string
+ *                 jokeType:
+ *                   type: string
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: Joke not found
+ */
 app.patch("/jokes/:id", (req, res) => {
   const jokeId = parseInt(req.params.id);
   const userKey = req.query.key;
@@ -286,7 +507,40 @@ app.patch("/jokes/:id", (req, res) => {
  *         description: Joke not found
  */
 
-//7. DELETE Specific joke
+/**
+ * @swagger
+ * tags:
+ *   - name: Jokes
+ *     description: Joke management endpoints
+ */
+/**
+ * @swagger
+ * /jokes/{id}:
+ *   delete:
+ *     tags:
+ *       - Jokes
+ *     summary: Delete a specific joke by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the joke to delete
+ *       - in: query
+ *         name: key
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Master key for authorization
+ *     responses:
+ *       200:
+ *         description: Joke deleted successfully
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: Joke not found
+ */
 app.delete("/jokes/:id", (req, res) => {
   const jokeId = parseInt(req.params.id);
   const userKey = req.query.key;
