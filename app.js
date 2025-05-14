@@ -170,27 +170,6 @@ app.get("/jokes", (req, res) => {
 
 /**
  * @swagger
- * /jokes:
- *   get:
- *     summary: Get jokes by type
- *     parameters:
- *       - name: type
- *         in: query
- *         required: false
- *         description: Type of jokes to filter
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: A list of jokes
- *       400:
- *         description: Bad request
- *       404:
- *         description: No jokes found for this type
- */
-
-/**
- * @swagger
  * tags:
  *   - name: Jokes
  *     description: Joke management endpoints
@@ -253,36 +232,6 @@ app.post("/jokes", (req, res) => {
     res.status(403).json({ message: "Forbidden" });
   }
 });
-
-/**
- * @swagger
- * /jokes:
- *   post:
- *     summary: Add a new joke
- *     parameters:
- *       - name: key
- *         in: query
- *         required: true
- *         description: Master key for authentication
- *         schema:
- *           type: string
- *       - name: joke
- *         in: body
- *         required: true
- *         description: The joke text and type
- *         schema:
- *           type: object
- *           properties:
- *             text:
- *               type: string
- *             type:
- *               type: string
- *     responses:
- *       201:
- *         description: Joke created
- *       403:
- *         description: Forbidden
- */
 
 /**
  * @swagger
@@ -365,44 +314,6 @@ app.put("/jokes/:id", (req, res) => {
 
 /**
  * @swagger
- * /jokes/{id}:
- *   put:
- *     summary: Update a joke
- *     parameters:
- *       - name: id
- *         in: path
- *         required: true
- *         description: ID of the joke to update
- *         schema:
- *           type: integer
- *       - name: key
- *         in: query
- *         required: true
- *         description: Master key for authentication
- *         schema:
- *           type: string
- *       - name: joke
- *         in: body
- *         required: true
- *         description: The updated joke text and type
- *         schema:
- *           type: object
- *           properties:
- *             text:
- *               type: string
- *             type:
- *               type: string
- *     responses:
- *       200:
- *         description: Joke updated
- *       403:
- *         description: Forbidden
- *       404:
- *         description: Joke not found
- */
-
-/**
- * @swagger
  * tags:
  *   - name: Jokes
  *     description: Joke management endpoints
@@ -479,44 +390,6 @@ app.patch("/jokes/:id", (req, res) => {
     res.status(404).json({ message: "Joke not found" });
   }
 });
-
-/**
- * @swagger
- * /jokes/{id}:
- *   patch:
- *     summary: Partially update a joke
- *     parameters:
- *       - name: id
- *         in: path
- *         required: true
- *         description: ID of the joke to partially update
- *         schema:
- *           type: integer
- *       - name: key
- *         in: query
- *         required: true
- *         description: Master key for authentication
- *         schema:
- *           type: string
- *       - name: joke
- *         in: body
- *         required: false
- *         description: The updated joke text and/or type
- *         schema:
- *           type: object
- *           properties:
- *             text:
- *               type: string
- *             type:
- *               type: string
- *     responses:
- *       200:
- *         description: Joke partially updated
- *       403:
- *         description: Forbidden
- *       404:
- *         description: Joke not found
- */
 
 /**
  * @swagger
