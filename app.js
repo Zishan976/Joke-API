@@ -35,7 +35,6 @@ const swaggerOptions = {
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-//1. GET a random joke
 /**
  * @swagger
  * tags:
@@ -53,6 +52,8 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
  *       200:
  *         description: A random joke
  */
+
+//1. GET a random joke
 app.get("/jokes/random", (req, res) => {
   const randomIndex = Math.floor(Math.random() * jokes.length);
   const randomJoke = jokes[randomIndex];
@@ -96,6 +97,8 @@ app.get("/jokes/random", (req, res) => {
  *       404:
  *         description: Joke not found
  */
+
+//2. GET a specific joke by ID
 app.get("/jokes/:id", (req, res) => {
   const jokeId = parseInt(req.params.id);
   const joke = jokes.find((joke) => joke.id === jokeId);
@@ -147,6 +150,8 @@ app.get("/jokes/:id", (req, res) => {
  *       404:
  *         description: No jokes found for this type
  */
+
+//3. GET jokes filtered by type
 app.get("/jokes", (req, res) => {
   const jokeType = req.query.type;
   if (jokeType) {
@@ -232,6 +237,8 @@ app.get("/jokes", (req, res) => {
  *       403:
  *         description: Forbidden
  */
+
+//4. POST a new joke
 app.post("/jokes", (req, res) => {
   const userKey = req.query.key;
   const newJoke = {
@@ -333,6 +340,8 @@ app.post("/jokes", (req, res) => {
  *       404:
  *         description: Joke not found
  */
+
+//5. PUT a specific joke by ID
 app.put("/jokes/:id", (req, res) => {
   const jokeId = parseInt(req.params.id);
   const userKey = req.query.key;
@@ -448,6 +457,8 @@ app.put("/jokes/:id", (req, res) => {
  *       404:
  *         description: Joke not found
  */
+
+//6. PATCH a specific joke by ID
 app.patch("/jokes/:id", (req, res) => {
   const jokeId = parseInt(req.params.id);
   const userKey = req.query.key;
@@ -541,6 +552,8 @@ app.patch("/jokes/:id", (req, res) => {
  *       404:
  *         description: Joke not found
  */
+
+//7. DELETE a specific joke by ID
 app.delete("/jokes/:id", (req, res) => {
   const jokeId = parseInt(req.params.id);
   const userKey = req.query.key;
