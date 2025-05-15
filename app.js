@@ -122,6 +122,15 @@ app.get("/jokes/:id", (req, res) => {
  *     tags:
  *       - Jokes
  *     summary: Get jokes filtered by type
+ *     description: |
+ *       You can filter jokes by the following types:
+ *       - Science
+ *       - Puns
+ *       - Wordplay
+ *       - Math
+ *       - Food
+ *       - Sports
+ *       - Movies
  *     parameters:
  *       - in: query
  *         name: type
